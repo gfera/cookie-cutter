@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# Cookie Cutter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web app that generates 3D printable cookie cutters from SVG files. Upload an SVG shape, adjust parameters like scale, wall thickness, and height, preview the result in an interactive 3D viewer, and export the cutter as an STL file ready for 3D printing.
 
-Currently, two official plugins are available:
+## How It Works
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. **Upload an SVG** — The shape is parsed and normalized into Three.js `Shape` objects.
+2. **Adjust parameters** — Control scale, wall thickness (mm), and height (mm) via the sidebar. An approximate size in centimeters is shown in real time.
+3. **3D Preview** — The cutter is rendered with a metallic material using `@react-three/fiber` and `@react-three/drei`. Orbit the camera to inspect from any angle.
+4. **Export STL** — Generates a proper STL mesh (base + walls) and downloads it as `cookie_cutter.stl`.
 
-## React Compiler
+### Shape Processing Pipeline
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **SVG Parsing** (`svgParser.ts`) — Uses Three.js `SVGLoader` to convert SVG paths into `Shape` objects, centering and normalizing them.
+- **Shape Offsetting** (`shapeOffset.ts`) — Uses [ClipperLib](https://sourceforge.net/p/jsclipper/) to offset shapes outward and compute boolean differences (outer − inner = wall).
+- **Cutter Generation** (`cutterGenerator.ts`) — Combines offset and difference operations to produce the cutter wall and base shapes.
+- **STL Export** — Uses Three.js `STLExporter` to serialize the extruded geometry.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 19** + **TypeScript** + **Vite**
+- **Three.js** / **@react-three/fiber** / **@react-three/drei** — 3D rendering
+- **ClipperLib** — Polygon offsetting and boolean operations
+- **Zustand** — State management
+- **Tailwind CSS** — Styling
+- **Lucide React** — Icons
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- [Node.js](https://nodejs.org/) (v18 or later)
+- npm (comes with Node.js)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repo-url>
+cd cookie-cutter
+
+# Install dependencies
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# Start the dev server with HMR
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The app will be available at `http://localhost:5173`.
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+Output goes to the `dist/` directory.
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+### Lint
+
+```bash
+npm run lint
 ```
