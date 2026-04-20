@@ -71,3 +71,25 @@ npm run preview
 ```bash
 npm run lint
 ```
+
+## Deploy to GitHub Pages
+
+This project includes a GitHub Actions workflow at `.github/workflows/deploy.yml` that builds and deploys the app to GitHub Pages on every push to `main`.
+
+### One-time repository setup
+
+1. Push this repository to GitHub.
+2. Open **Settings → Pages**.
+3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+
+### Automatic deployment
+
+- Push changes to `main`.
+- GitHub Actions will run the `Deploy to GitHub Pages` workflow.
+- After it completes, your site will be available at:
+  - `https://<your-username>.github.io/cookie-cutter/`
+
+### Notes
+
+- The Vite `base` path is automatically set to `/cookie-cutter/` in GitHub Actions builds.
+- If you rename the repository, update the `base` value in `vite.config.ts` accordingly.
